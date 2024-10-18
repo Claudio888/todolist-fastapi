@@ -1,14 +1,25 @@
 from http import HTTPStatus
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from todolist.database import get_session
 from todolist.models import Task
-from todolist.schemas import Message, TaskList, TaskSchema
+from todolist.schemas import Message, TaskFull, TaskList, TaskSchema
 
 app = FastAPI()
+
+origins = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 
 @app.get('/')
@@ -16,7 +27,7 @@ def read_root():
     return {'message': 'Olá Mundo!'}
 
 
-@app.post('/tasks/', status_code=HTTPStatus.CREATED, response_model=TaskSchema)
+@app.post('/tasks/', status_code=HTTPStatus.CREATED, response_model=TaskFull)
 def create_user(task: TaskSchema, session: Session = Depends(get_session)):
     new_task = Task(
         task_name=task.task_name,
