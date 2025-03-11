@@ -28,7 +28,7 @@ def read_root():
 
 
 @app.post('/tasks/', status_code=HTTPStatus.CREATED, response_model=TaskFull)
-def create_user(task: TaskSchema, session: Session = Depends(get_session)):
+def create_task(task: TaskSchema, session: Session = Depends(get_session)):
     new_task = Task(
         task_name=task.task_name,
         task_description=task.task_description,
